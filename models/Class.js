@@ -16,6 +16,10 @@ module.exports = function (sequelize, Sequelize){
       type: Sequelize.STRING(200),
       defaultValue: ''
     },
+    description: { 
+      type: Sequelize.STRING(1000),
+      defaultValue: ''
+    },
     ClassTypeId: {
       type: Sequelize.INTEGER(11),
       allowNull: false

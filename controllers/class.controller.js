@@ -113,7 +113,8 @@ const classController = {
           ClassTypeId: req.body.ClassTypeId,
           classTitle: req.body.classTitle,
           tutor: req.body.tutor,
-          imageName: imagePath
+          imageName: imagePath,
+          description: req.body.description
         };
 
         try {
@@ -258,6 +259,8 @@ const classController = {
           classExist.ClassTypeId = createClass.ClassTypeId;
           classExist.classTitle = createClass.classTitle;
           classExist.tutor = createClass.tutor;
+          classExist.description = req.body.description;
+
           if (req.file){
             helpers.deleteImage(classExist.imageName.replace('uploads\\', ''));
             classExist.imageName = imagePath;
@@ -356,6 +359,7 @@ const classController = {
         isApproved: classExist.isApproved,
         tutor: classExist.tutor,
         updatedAt: classExist.updatedAt,
+        description: classExist.description,
         previousClassId
       };
 
