@@ -4,6 +4,8 @@ const { validationResult } = require("express-validator");
 const {v4: uuidv4} = require('uuid');
 require('dotenv').config();
 
+const { sendMail } = require("../middlewares/mailer");
+
 //const userModel = require('../models/User');
 const db = require('../models');
 const userModel = db.User;
@@ -36,12 +38,15 @@ const userController = {
 
     const salt_rounds = 10;
     const hash = await bcrypt.hash(req.body.password, salt_rounds);
+    let activateID = activateToken();
 
     var createUser = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email.toLowerCase(),
-      password: hash
+      password: hash,
+      activationId: activateID,
+      isActivated: false
     };
 
     try {
@@ -59,6 +64,8 @@ const userController = {
         .catch(err => {
           throw err;
         });
+
+      sendMail(userCreated.id, activateID);
 
       res.status(200).send(responseObject(false, 'successfully created user'));
 
@@ -95,6 +102,9 @@ const userController = {
       if (userExist == null)
         return res.status(404).send(responseObject(true, 'user does not exist'));
         
+      if (userExist.isActivated != true)
+        return res.status(401).send(responseObject(true, 'user has not been authorized'));
+        
       var compare_passwords = await bcrypt.compare(password, userExist.password);
       if (!compare_passwords) {
         return res.status(401).send(responseObject(true, 'authentication failed'));
@@ -122,6 +132,40 @@ const userController = {
     } catch (error) {
       return res.status(500).send(responseObject(true, 'an error occured', {}, error));
     }
+  },
+
+  activateAccount: async (req, res) => {
+    let id = req.params.id;
+    let activationId = req.params.activationId;
+
+    try {
+      const userExist = await userModel.findOne({
+        where: {
+          id,
+          activationId
+        }
+      }).then(res => res)
+        .catch(err => {throw err});
+
+      if (userExist == null)
+        return res.status(404).send(responseObject(true, 'user does not exist'));
+
+      userExist.isActivated = true; 
+      userExist.updatedAt = true; 
+      userExist.save();
+
+      res.status(200).send(responseObject(false, 'successfully approved user'));
+
+    } catch (error) {
+      return res.status(500).send(responseObject(true, 'an error occured', {}, error));
+    }
+  },
+
+  testEmail: async (req, res) => {
+    await sendMail().then(result => console.log('Email sent...', result))
+      .catch(error => console.log(error.message));
+
+    res.send('ok');
   }
 }
 

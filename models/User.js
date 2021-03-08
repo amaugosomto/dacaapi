@@ -14,7 +14,11 @@ module.exports = function (sequelize, Sequelize){
       type: Sequelize.STRING(100),
       allowNull: false
     },
-    activationId: Sequelize.STRING(300)
+    activationId: Sequelize.STRING(300),
+    isActivated: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
+    }
   });
 
   User.associate = models => {

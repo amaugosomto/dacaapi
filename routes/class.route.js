@@ -84,4 +84,8 @@ router.post('/setAnsweredQuiz',
   classController.setAnsweredQuiz
 );
 
+router.post('/setStudentResponses',
+  classController.setStudentResponses
+);
+
 module.exports = router;

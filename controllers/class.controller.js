@@ -28,6 +28,7 @@ const QuizAnswerModel = db.QuizAnswer;
 const AdvancedClassOrderModel = db.AdvancedClassesOrder;
 const BasicClassesOrderModel = db.BasicClassesOrder;
 const StudentClassModel = db.StudentClass;
+const StudentResponseModel = db.StudentResponse;
 
 const errorFormatter = ({msg}) => {
   return {msg};
@@ -1141,6 +1142,50 @@ const classController = {
 
     } catch (error) {
       res.status(500).send(responseObject(true, `error getting student class`, {}, error));
+    }
+    
+  },
+
+  setStudentResponses: async (req, res) => {
+    
+    let authorization = req.headers.authorization;
+    let token = authorization.replace('Bearer ', '');
+
+    try {
+      let decoded = JWT.verify(token, process.env.JWT_KEY);
+
+      let studentRespnsesToSave = [];
+
+      let studentResponsesFromFrnt = req.body;
+      let classIdToDelete = req.body[0].classId;
+
+      await StudentResponseModel.destroy({
+        where: {
+          ClassId: classIdToDelete,
+          UserId: decoded.sub
+        }
+      });
+      
+      for (let i = 0; i < studentResponsesFromFrnt.length; i++) {
+        const response = studentResponsesFromFrnt[i];
+
+        let data = {
+          ClassId : response.classId,
+          UserId: decoded.sub,
+          quizCorrectAns: response.quizCorrectAnswer,
+          userAnswer: response.userAnswer,
+          QuizId: response.quizId
+        }
+
+        studentRespnsesToSave.push(data);
+      }
+
+      await StudentResponseModel.bulkCreate(studentRespnsesToSave);
+
+      return res.send();
+    } catch (error) {
+      console.log(error)
+      res.status(500).send(responseObject(true, `error setting student responses`, {}, error));
     }
     
   },

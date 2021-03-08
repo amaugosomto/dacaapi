@@ -22,4 +22,12 @@ router.get('/getAllUsers',
   userController.getAllUsers
 );
 
+router.get('/activateAccount/:id/:activationId',
+  userController.activateAccount
+);
+
+router.get('/testEmail',
+  userController.testEmail
+);
+
 module.exports = router;
