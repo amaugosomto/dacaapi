@@ -67,7 +67,7 @@ const userController = {
 
       sendMail(userCreated.id, activateID);
 
-      res.status(200).send(responseObject(false, 'successfully created user'));
+      res.status(200).send(responseObject(false, 'User has successfully registered, please check your mail to activate your account'));
 
     } catch (error) {
       res.status(400).send(responseObject(true, `unable to create user`, {}, error));
@@ -103,7 +103,7 @@ const userController = {
         return res.status(404).send(responseObject(true, 'user does not exist'));
         
       if (userExist.isActivated != true)
-        return res.status(401).send(responseObject(true, 'user has not been authorized'));
+        return res.status(401).send(responseObject(true, 'user has not been activated, please check your mail and click on the activate button'));
         
       var compare_passwords = await bcrypt.compare(password, userExist.password);
       if (!compare_passwords) {

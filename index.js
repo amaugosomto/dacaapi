@@ -10,6 +10,8 @@ const fileupload = require('express-fileupload');
 const usersRoutes = require('./routes/users.routes');
 const adminUsersRoutes = require('./routes/adminUser.route');
 const classesRoutes = require('./routes/class.route');
+const sermonsRoutes = require('./routes/sermon.route');
+const eventsRoutes = require('./routes/event.route');
 
 var whitelist = ['http://localhost:4000', 'https://daca-ng.vercel.app']
 var corsOptions = {
@@ -43,9 +45,12 @@ db.sequelize.authenticate()
 app.get('/', (req, res) => {
   res.send("Hello World");
 });
+
 app.use('/api/users', usersRoutes);
 app.use('/api/adminUser', adminUsersRoutes);
 app.use('/api/classes', classesRoutes);
+app.use('/api/sermons', sermonsRoutes);
+app.use('/api/events', eventsRoutes);
 // Require testimonial routes
 //const testimonialRoutes = require('./routes/testimonial.routes');
 

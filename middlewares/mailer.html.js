@@ -1,5 +1,5 @@
 const config = require("../config/config");
-const domain = "http://localhost:4000"
+const domain = "https://daca-ng.vercel.app"
 
 const getMailBody = (id, token) => {
     return `
@@ -74,12 +74,12 @@ const getMailBody = (id, token) => {
             <h5>
                 Thanks for signing up with DACA-NG!.
             </h5>
-            <p> We are happy to welcome you aboard </p>
-            <p> Please click on the link to activate your account </p>
+            <h5> We are happy to welcome you aboard </h5>
+            <h5> Please click on the link to activate your account </h5>
             <a id="activate" href="${domain}/activate?id=${id}&token=${token}">activate</a>
             <h5>Have fun, and don't hestiate to contact us with your feedback.</h5>
 
-            <h5>iGofer Team</h5>
+            <h5>DACA-NG Team</h5>
             <a href="${domain}">DACA-NG</a>
 
             <hr>
