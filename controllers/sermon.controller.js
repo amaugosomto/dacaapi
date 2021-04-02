@@ -3,7 +3,7 @@ const JWT = require('jsonwebtoken');
 const { validationResult } = require("express-validator");
 const {v4: uuidv4} = require('uuid');
 require('dotenv').config();
-const { audioFilter, deleteImage } = require('../middlewares/imageFilter');
+const { sermonFilter, deleteImage } = require('../middlewares/imageFilter');
 const multer = require('multer');
 const path = require('path');
 
@@ -46,7 +46,7 @@ const sermonController = {
       return res.status(403).send({errors: errors.array()});
     }
 
-    let upload = multer({ storage: storage, fileFilter: audioFilter }).single('audio');
+    let upload = multer({ storage: storage, fileFilter: sermonFilter }).single('audio');
     let audioName = '';
 
     try {
